@@ -13,7 +13,7 @@ namespace LibEvdev
     {
         public static ExternalException New() => new(Marshal.GetLastPInvokeErrorMessage(), Marshal.GetLastPInvokeError());
 
-        public static ExternalException Throw(int errorCode) => new(Marshal.GetLastPInvokeErrorMessage(), errorCode);
+        public static ExternalException New(int errorCode) => new(Marshal.GetLastPInvokeErrorMessage(), errorCode);
     }
 }
 
