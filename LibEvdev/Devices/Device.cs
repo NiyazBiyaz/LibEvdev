@@ -11,7 +11,7 @@ namespace LibEvdev.Devices
     public abstract class Device : IDevice
     {
         protected nint Dev;
-        protected int FileDescriptor;
+        protected int FileDescriptor = -1;
 
         protected ILogger Logger => Log.ForContext("SourceContext", "LibEvdev.Devices.Device")
                                        .ForContext("DevicePath", Path);
