@@ -12,7 +12,7 @@ namespace LibEvdev.Native
     /// <remarks>
     /// Class doesn't implements all API functionality.
     /// </remarks>
-    public static partial class EvdevBindings
+    public static partial class Evdev
     {
         #region Initialization and setup
 

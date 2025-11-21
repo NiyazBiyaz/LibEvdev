@@ -18,8 +18,8 @@ namespace HelperScripts
             uint type = uint.Parse(args[0]);
             uint code = uint.Parse(args[1]);
 
-            string typeName = EvdevBindings.GetEventTypeName(type);
-            string codeName = EvdevBindings.GetEventCodeName(type, code);
+            string typeName = Evdev.GetEventTypeName(type);
+            string codeName = Evdev.GetEventCodeName(type, code);
 
             Console.WriteLine($"{codeName} is member of the {typeName}: {type}, {code}.");
         }
