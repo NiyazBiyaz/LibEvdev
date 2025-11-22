@@ -204,7 +204,7 @@ namespace LibEvdev.Native
         /// <param name="type">Event type value</param>
         /// <returns>Type name as string</returns>
         /// <exception cref="ExternalException">If received event type is invalid</exception>
-        public static string GetEventTypeName(uint type) => EventTypeGetName(type) ?? throw AutoExternalException.New();
+        public static string GetEventTypeName(uint type) => EventTypeGetName(type);
         /// <summary>
         /// Get event code name by its value & type value.
         /// </summary>
@@ -212,7 +212,7 @@ namespace LibEvdev.Native
         /// <param name="code">Value of event code</param>
         /// <returns>Code name as string</returns>
         /// <exception cref="ExternalException">If received event code is invalid</exception>
-        public static string GetEventCodeName(uint type, uint code) => EventCodeGetName(type, code) ?? throw AutoExternalException.New();
+        public static string GetEventCodeName(uint type, uint code) => EventCodeGetName(type, code);
 
         /// <summary>
         /// Get event type value by its name.
