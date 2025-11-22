@@ -16,7 +16,7 @@ namespace Evtest
                 return 1;
             }
 
-            var mouse = new ReadonlyDevice(args[0]);
+            var mouse = new ReadOnlyDevice(args[0]);
 
             Console.CancelKeyPress += (_, _) =>
             {
