@@ -21,14 +21,14 @@ namespace LibEvdev.Devices
 
         protected Device(string path)
         {
-            FileDescriptor = Syscall.open(path, OpenFlags.O_RDONLY | OpenFlags.O_NONBLOCK);
+            FileDescriptor = SysCall.open(path, (int)(OpenFlags.O_RDONLY | OpenFlags.O_NONBLOCK));
             if (FileDescriptor < 0)
                 throw new UnixIOException(Stdlib.GetLastError());
 
             int err = Evdev.NewFromFd(FileDescriptor, ref Dev);
             if (err < 0)
             {
-                Syscall.close(FileDescriptor);
+                SysCall.close(FileDescriptor);
                 FileDescriptor = -1;
 
                 throw AutoExternalException.New(-err);
