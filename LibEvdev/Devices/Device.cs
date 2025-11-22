@@ -39,6 +39,11 @@ namespace LibEvdev.Devices
             Logger.Information("Created device from path: {Path}", path);
         }
 
+        protected Device()
+        {
+            Dev = Evdev.New();
+        }
+
         public string Name => Evdev.GetName(Dev);
 
         public string Path
