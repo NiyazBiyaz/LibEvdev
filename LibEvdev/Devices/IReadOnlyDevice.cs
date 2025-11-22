@@ -5,7 +5,7 @@ using LibEvdev.Native;
 
 namespace LibEvdev.Devices
 {
-    public interface IReadonlyDevice : IDevice
+    public interface IReadOnlyDevice : IDevice
     {
         public IEnumerable<InputEvent> ReadInputEvents(int timeoutPeriod);
     }

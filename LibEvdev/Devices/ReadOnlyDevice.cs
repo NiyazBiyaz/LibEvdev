@@ -6,7 +6,7 @@ using Mono.Unix.Native;
 
 namespace LibEvdev.Devices
 {
-    public class ReadonlyDevice(string path) : Device(path), IReadonlyDevice
+    public class ReadOnlyDevice(string path) : Device(path), IReadOnlyDevice
     {
         public bool StopFlag { get; set; }
 

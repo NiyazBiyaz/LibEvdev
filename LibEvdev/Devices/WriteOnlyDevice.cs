@@ -5,11 +5,11 @@ using LibEvdev.Native;
 
 namespace LibEvdev.Devices
 {
-    public class WriteonlyDevice : Device, IWriteonlyDevice, IDisposable
+    public class WriteOnlyDevice : Device, IWriteOnlyDevice, IDisposable
     {
         private nint uiDev;
 
-        public WriteonlyDevice(DeviceDescription configuration)
+        public WriteOnlyDevice(DeviceDescription configuration)
             : base()
         {
             ArgumentNullException.ThrowIfNull(configuration.EventCapabilities);

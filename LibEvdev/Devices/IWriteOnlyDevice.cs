@@ -5,7 +5,7 @@ using LibEvdev.Native;
 
 namespace LibEvdev.Devices
 {
-    public interface IWriteonlyDevice : IDevice
+    public interface IWriteOnlyDevice : IDevice
     {
         public void SetName(string name);
 
