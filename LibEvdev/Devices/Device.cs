@@ -47,6 +47,12 @@ namespace LibEvdev.Devices
             init { path = value; }
         }
 
+        public string Phys => Evdev.GetPhys(Dev);
+
+        public string Uniq => Evdev.GetUniq(Dev);
+
+        public int DriverVersion => Evdev.GetDriverVersion(Dev);
+
         public GrabMode Grab
         {
             get => grabMode;
@@ -73,17 +79,6 @@ namespace LibEvdev.Devices
                     { IdProperty.Product, pro },
                     { IdProperty.Version, ver }
                 };
-            }
-            set
-            {
-                if (value.TryGetValue(IdProperty.BusType, out int bus))
-                    Evdev.SetIdBustype(Dev, bus);
-                if (value.TryGetValue(IdProperty.Vendor, out int vdr))
-                    Evdev.SetIdVendor(Dev, vdr);
-                if (value.TryGetValue(IdProperty.Product, out int pro))
-                    Evdev.SetIdProduct(Dev, pro);
-                if (value.TryGetValue(IdProperty.Version, out int ver))
-                    Evdev.SetIdVersion(Dev, ver);
             }
         }
 

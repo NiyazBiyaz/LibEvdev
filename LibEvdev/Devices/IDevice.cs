@@ -15,7 +15,22 @@ namespace LibEvdev.Devices
         /// <summary>
         /// Path that was used to open this device. <i>N/A</i> if device was opened by other way.
         /// </summary>
-        string Path { get; }
+        public string Path { get; }
+
+        /// <summary>
+        /// Physical path of the devices, e.g. usb-port.
+        /// </summary>
+        public string Phys { get; }
+
+        /// <summary>
+        /// Uniq id of the device that make different between devices.
+        /// </summary>
+        public string Uniq { get; }
+
+        /// <summary>
+        /// Driver version of the device.
+        /// </summary>
+        public int DriverVersion { get; }
 
         /// <summary>
         /// Allows automatically work with the <see cref="Evdev.Grab"/>, enables exclusive mode for this
@@ -37,7 +52,7 @@ namespace LibEvdev.Devices
         /// <remarks>
         /// Allows to individually set different <see cref="IdProperty"/> using dicts.
         /// </remarks>
-        IDictionary<IdProperty, int> Id { get; set; }
+        IDictionary<IdProperty, int> Id { get; }
 
         /// <param name="type">Event type value.</param>
         /// <param name="code">[<i>Optional</i>] Event code value. Don't set if you want to check availability only of the
