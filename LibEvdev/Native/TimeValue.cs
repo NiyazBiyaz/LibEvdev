@@ -19,14 +19,10 @@ namespace LibEvdev.Native
         long Microseconds
     )
     {
-        public long AsMillisecondsLong() => Seconds + Microseconds / 1000;
-
-        public double AsMillisecondsDouble() => Seconds + Microseconds / 1000;
-
-        public long AsTicks() => Seconds * 10_000_000 + Microseconds * 10;
+        public long AsTicks() => Seconds * TimeSpan.TicksPerSecond + Microseconds * TimeSpan.TicksPerMicrosecond;
 
         public TimeOnly AsTimeOnly() => new(AsTicks());
 
-        public DateTime AsDateTime() => new(AsTicks());
+        public DateTime AsDateTime() => DateTime.UnixEpoch.AddTicks(AsTicks());
     }
 }
