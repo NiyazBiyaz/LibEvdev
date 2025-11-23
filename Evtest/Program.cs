@@ -2,50 +2,76 @@
 // See the LICENSE file in the repository root for full license text.
 
 using LibEvdev.Devices;
-using LibEvdev.Native;
+using Mono.Unix;
+using Serilog;
+using Spectre.Console;
 
 namespace Evtest
 {
     public static class Program
     {
-        public static int Main(string[] args)
+        public static void Main(string[] args)
         {
-            if (args.Length < 1)
+            Log.Logger = new LoggerConfiguration()
+                            .WriteTo.Console(outputTemplate:
+                                "{Timestamp:yyyy-MM-dd-HH:mm:ss} [{Level}][{SourceContext}] {Message:lj}{NewLine}{Exception}")
+                            .MinimumLevel.Error()
+                            .CreateLogger();
+
+            if (args.Length > 0)
             {
-                Console.WriteLine("Usage: Evtest <path-to-dev>");
-                return 1;
+                foreach (string pathName in args)
+                {
+                    writeDeviceInfo(pathName);
+                    AnsiConsole.Write("\n");
+                }
             }
-
-            var mouse = new ReadOnlyDevice(args[0]);
-
-            Console.CancelKeyPress += (_, _) =>
+            else
             {
-                mouse.StopFlag = true;
-            };
-
-            foreach (var inputEvent in mouse.ReadInputEvents(1000))
-            {
-                if (inputEvent.Type != EventType.Synchronization)
-                    Console.WriteLine(formatEvent(inputEvent));
-                else
-                    Console.WriteLine("===================End event frame===================");
+                AnsiConsole.MarkupLine("No devices assigned to use.");
+                AnsiConsole.MarkupLine("At this moment you can't choose any device there, maybe later...");
+                return;
             }
-
-            mouse.Dispose();
-
-            return 0;
         }
 
-        private static string formatEvent(InputEvent inputEvent)
+        private static void writeDeviceInfo(string pathName)
         {
-            string typeName = Evdev.GetEventTypeName((uint)inputEvent.Type);
-            string codeName = Evdev.GetEventCodeName((uint)inputEvent.Type, inputEvent.Code);
+            if (!Device.IsValidDevicePath(pathName))
+            {
+                AnsiConsole.MarkupLine($"""
+                [red]Received path [cyan]{pathName}[/] is not valid.[/]
+                Try another like [bold]/dev/input/eventX[/].
+                """);
+                return;
+            }
 
-            return string.Format("Event: time: {0}, type: {1}, code: {2}, value: {3}",
-                                inputEvent.TimeValue.AsDateTime().ToLocalTime(),
-                                typeName,
-                                codeName,
-                                inputEvent.Value);
+            ReadOnlyDevice device;
+
+            try
+            {
+                device = new ReadOnlyDevice(pathName);
+            }
+            catch (UnixIOException e)
+            {
+                AnsiConsole.MarkupLine($"[bold red]Can't open device.[/] Try as [bold purple]sudo[/]");
+                AnsiConsole.WriteException(e);
+                return;
+            }
+
+            AnsiConsole.MarkupLine($"""
+            Created device from path: [cyan]{pathName}[/]
+            Device info:
+                Name: [bold green]{device.Name}[/]
+                Driver version: [bold purple]{device.DriverVersion}[/]
+                Device ID:
+                    Product: [bold purple]0x{device.Id[IdProperty.Product]:X}[/]
+                    Vendor: [bold purple]0x{device.Id[IdProperty.Vendor]:X}[/]
+                    BusType: [bold purple]0x{device.Id[IdProperty.BusType]:X}[/]
+                    Version: [bold purple]0x{device.Id[IdProperty.Version]:X}[/]
+            """);
+
+            AnsiConsole.MarkupLine($"Disposing [green]{device.Name}[/]...");
+            device.Dispose();
         }
     }
 }
