@@ -21,6 +21,11 @@ namespace LibEvdev.Devices
 
         protected Device(string path)
         {
+            ArgumentNullException.ThrowIfNull(path);
+
+            if (!IsValidDevicePath(path))
+                throw new ArgumentException("Path should to follow to the template '/dev/input/eventX'.");
+
             FileDescriptor = SysCall.open(path, (int)(OpenFlags.O_RDONLY | OpenFlags.O_NONBLOCK));
             if (FileDescriptor < 0)
                 throw new UnixIOException(Stdlib.GetLastError());
@@ -166,6 +171,23 @@ namespace LibEvdev.Devices
             }
 
             return result;
+        }
+
+        public static bool IsValidDevicePath(string pathName)
+        {
+            ArgumentNullException.ThrowIfNull(pathName);
+
+            const string dev_path_template = "/dev/input/event";
+
+            // string equation
+            if (!pathName.AsSpan(0, dev_path_template.Length).Equals(dev_path_template, StringComparison.Ordinal))
+                return false;
+
+            // last symbols is a number
+            if (!int.TryParse(pathName.AsSpan(dev_path_template.Length), out int _))
+                return false;
+
+            return true;
         }
 
         public void Dispose()
