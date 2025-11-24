@@ -17,6 +17,7 @@ namespace LibEvdev.Devices
 
         public IDictionary<EventType, List<ushort>>? EventCapabilities { get; init; }
 
+        [SetsRequiredMembers]
         public DeviceDescription(IDevice device)
         {
             Name = device.Name;
