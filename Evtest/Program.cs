@@ -2,6 +2,7 @@
 // See the LICENSE file in the repository root for full license text.
 
 using LibEvdev.Devices;
+using LibEvdev.Native;
 using Mono.Unix;
 using Serilog;
 using Spectre.Console;
@@ -58,19 +59,55 @@ namespace Evtest
                 return;
             }
 
+            var deviceDescription = new DeviceDescription(device);
+
+            if (deviceDescription.EventCapabilities is null)
+            {
+                var e = new NullReferenceException("Can't read event capabilities.");
+                AnsiConsole.WriteException(e);
+                throw e;
+            }
+
             AnsiConsole.MarkupLine($"""
             Created device from path: [cyan]{pathName}[/]
             Device info:
-                Name: [bold green]{device.Name}[/]
+                Name: [bold green]{deviceDescription.Name}[/]
                 Driver version: [bold purple]{device.DriverVersion}[/]
                 Device ID:
-                    Product: [bold purple]0x{device.Id[IdProperty.Product]:X}[/]
-                    Vendor: [bold purple]0x{device.Id[IdProperty.Vendor]:X}[/]
-                    BusType: [bold purple]0x{device.Id[IdProperty.BusType]:X}[/]
-                    Version: [bold purple]0x{device.Id[IdProperty.Version]:X}[/]
+                    Product: [bold purple]0x{deviceDescription.Id[IdProperty.Product]:X}[/]
+                    Vendor: [bold purple]0x{deviceDescription.Id[IdProperty.Vendor]:X}[/]
+                    BusType: [bold purple]0x{deviceDescription.Id[IdProperty.BusType]:X}[/]
+                    Version: [bold purple]0x{deviceDescription.Id[IdProperty.Version]:X}[/]
             """);
 
-            AnsiConsole.MarkupLine($"Disposing [green]{device.Name}[/]...");
+            AnsiConsole.MarkupLine("Supported events:");
+
+            foreach (var type in deviceDescription.EventCapabilities.Keys)
+            {
+                string typeName = Evdev.GetEventTypeName((uint)type);
+                AnsiConsole.MarkupLine($"\tEvent type: [bold green]{type}[/] ([purple]{typeName}[/])");
+
+                if (type == EventType.Synchronization) continue;
+                foreach (ushort code in deviceDescription.EventCapabilities[type])
+                {
+                    string codeName = Evdev.GetEventCodeName((uint)type, code);
+                    AnsiConsole.MarkupLine($"\t\tEvent code: [bold green]{code}[/] ([purple]{codeName}[/])");
+                }
+            }
+
+            AnsiConsole.MarkupLine("Other:");
+
+            (int delay, int period) = device.GetRepeat();
+            if (delay != 0 && period != 0)
+            {
+                AnsiConsole.MarkupLine($"""
+                    Repeat:
+                        Delay: [bold purple]{delay}[/]
+                        Period: [bold purple]{period}[/]
+                """);
+            }
+
+            AnsiConsole.MarkupLine($"[orange]Disposing [green]{device.Name}[/]...[/]");
             device.Dispose();
         }
     }
