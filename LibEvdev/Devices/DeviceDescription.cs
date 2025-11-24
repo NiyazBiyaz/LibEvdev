@@ -95,7 +95,7 @@ namespace LibEvdev.Devices
             catch (Exception e)
             {
                 Log.ForContext("SourceContext", "LibEvdev.Device.DeviceDescriptor")
-                   .Error("Cannot get device name.", e);
+                   .Warning("Cannot get device name.", e);
             }
             return ret ?? "N/A";
         }
@@ -110,7 +110,7 @@ namespace LibEvdev.Devices
             catch (Exception e)
             {
                 Log.ForContext("SourceContext", "LibEvdev.Device.DeviceDescriptor")
-                   .Error("Cannot get device phys.", e);
+                   .Warning("Cannot get device phys.", e);
             }
             return ret ?? "N/A";
         }
@@ -125,7 +125,7 @@ namespace LibEvdev.Devices
             catch (Exception e)
             {
                 Log.ForContext("SourceContext", "LibEvdev.Device.DeviceDescriptor")
-                   .Error("Cannot get device uniq.", e);
+                   .Warning("Cannot get device uniq.", e);
             }
             return ret ?? "N/A";
         }
