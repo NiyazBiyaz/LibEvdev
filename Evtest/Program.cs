@@ -46,9 +46,8 @@ namespace Evtest
                     }
 
                     var description = new DeviceDescription(device);
-                    (int delay, int period) = device.GetRepeat();
 
-                    writeDeviceInfo(description, delay, period);
+                    writeDeviceInfo(description);
 
                     device.Dispose();
                     AnsiConsole.MarkupLine($"[yellow]Disposing [green]{description.Name}[/]...[/]");
@@ -63,7 +62,7 @@ namespace Evtest
             }
         }
 
-        private static void writeDeviceInfo(DeviceDescription deviceDescription, int delay, int period)
+        private static void writeDeviceInfo(DeviceDescription deviceDescription)
         {
             if (deviceDescription.EventCapabilities is null)
             {
@@ -99,15 +98,17 @@ namespace Evtest
                 }
             }
 
-            AnsiConsole.MarkupLine("Other:");
+            AnsiConsole.MarkupLine("Other information:");
 
-            if (delay != 0 && period != 0)
+            if (deviceDescription.RepeatInfo is not null)
             {
-                AnsiConsole.MarkupLine($"""
-                    Repeat:
-                        Delay: [bold purple]{delay}[/]
-                        Period: [bold purple]{period}[/]
-                """);
+                (int delay, int period) = deviceDescription.RepeatInfo.Value;
+                if (delay != 0 && period != 0)
+                    AnsiConsole.MarkupLine($"""
+                        Repeat:
+                            Delay: [bold purple]{delay}[/]
+                            Period: [bold purple]{period}[/]
+                    """);
             }
         }
     }
