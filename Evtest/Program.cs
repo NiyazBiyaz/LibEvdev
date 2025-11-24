@@ -51,7 +51,7 @@ namespace Evtest
                     writeDeviceInfo(description, delay, period);
 
                     device.Dispose();
-                    AnsiConsole.MarkupLine($"[orange]Disposing [green]{description.Name}[/]...[/]");
+                    AnsiConsole.MarkupLine($"[maroon]Disposing [green]{description.Name}[/]...[/]");
                     AnsiConsole.Write("\n");
                 }
             }
