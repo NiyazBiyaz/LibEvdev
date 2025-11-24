@@ -15,6 +15,7 @@ namespace LibEvdev.Devices
         public string? Phys { get; init; }
         public string? Uniq { get; init; }
         public string? Path { get; init; }
+        public (int delay, int period)? RepeatInfo { get; init; }
 
         public IDictionary<EventType, List<ushort>>? EventCapabilities { get; init; }
 
@@ -27,6 +28,7 @@ namespace LibEvdev.Devices
             Path = device.Path;
             DriverVersion = device.DriverVersion;
             Id = device.Id;
+            RepeatInfo = device.GetRepeat();
 
             var eventTypes = device.GetSupportedEventTypes();
             var capabilities = new Dictionary<EventType, List<ushort>>();
