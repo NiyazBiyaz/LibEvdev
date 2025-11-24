@@ -34,7 +34,7 @@ namespace LibEvdev.Devices
             {
                 capabilities[type] = new();
                 // 0x2ff = KEY_MAX
-                for (ushort code = 1; code < 0x2ff; code++)
+                for (ushort code = 0; code < 0x2ff; code++)
                 {
                     if (device.HasEvent((uint)type, code))
                         capabilities[type].Add(code);
