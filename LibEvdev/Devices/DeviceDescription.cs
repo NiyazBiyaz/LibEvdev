@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using LibEvdev.Native;
+using Serilog;
 
 namespace LibEvdev.Devices
 {
@@ -17,11 +18,12 @@ namespace LibEvdev.Devices
 
         public IDictionary<EventType, List<ushort>>? EventCapabilities { get; init; }
 
+        [SetsRequiredMembers]
         public DeviceDescription(IDevice device)
         {
-            Name = device.Name;
-            Phys = device.Phys;
-            Uniq = device.Uniq;
+            Name = safelyGetName(device);
+            Phys = safelyGetPhys(device);
+            Uniq = safelyGetUniq(device);
             Path = device.Path;
             DriverVersion = device.DriverVersion;
             Id = device.Id;
@@ -82,5 +84,50 @@ namespace LibEvdev.Devices
                 {EventType.Miscellaneous, [ (ushort)Miscellaneous.ScanCode ]}
             }
         };
+
+        private static string safelyGetName(IDevice device)
+        {
+            string? ret = null;
+            try
+            {
+                ret = device.Name;
+            }
+            catch (Exception e)
+            {
+                Log.ForContext("SourceContext", "LibEvdev.Device.DeviceDescriptor")
+                   .Error("Cannot get device name.", e);
+            }
+            return ret ?? "N/A";
+        }
+
+        private static string safelyGetPhys(IDevice device)
+        {
+            string? ret = null;
+            try
+            {
+                ret = device.Phys;
+            }
+            catch (Exception e)
+            {
+                Log.ForContext("SourceContext", "LibEvdev.Device.DeviceDescriptor")
+                   .Error("Cannot get device phys.", e);
+            }
+            return ret ?? "N/A";
+        }
+
+        private static string safelyGetUniq(IDevice device)
+        {
+            string? ret = null;
+            try
+            {
+                ret = device.Uniq;
+            }
+            catch (Exception e)
+            {
+                Log.ForContext("SourceContext", "LibEvdev.Device.DeviceDescriptor")
+                   .Error("Cannot get device uniq.", e);
+            }
+            return ret ?? "N/A";
+        }
     }
 }

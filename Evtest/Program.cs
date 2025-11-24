@@ -2,6 +2,7 @@
 // See the LICENSE file in the repository root for full license text.
 
 using LibEvdev.Devices;
+using LibEvdev.Native;
 using Mono.Unix;
 using Serilog;
 using Spectre.Console;
@@ -22,7 +23,35 @@ namespace Evtest
             {
                 foreach (string pathName in args)
                 {
-                    writeDeviceInfo(pathName);
+                    if (!Device.IsValidDevicePath(pathName))
+                    {
+                        AnsiConsole.MarkupLine($"""
+                        [red]Received path [cyan]{pathName}[/] is not valid.[/]
+                        Try another like [bold]/dev/input/eventX[/].
+                        """);
+                        return;
+                    }
+
+                    ReadOnlyDevice device;
+
+                    try
+                    {
+                        device = new ReadOnlyDevice(pathName);
+                    }
+                    catch (UnixIOException e)
+                    {
+                        AnsiConsole.MarkupLine($"[bold red]Can't open device.[/] Try as [bold purple]sudo[/]");
+                        AnsiConsole.WriteException(e);
+                        return;
+                    }
+
+                    var description = new DeviceDescription(device);
+                    (int delay, int period) = device.GetRepeat();
+
+                    writeDeviceInfo(description, delay, period);
+
+                    device.Dispose();
+                    AnsiConsole.MarkupLine($"[maroon]Disposing [green]{description.Name}[/]...[/]");
                     AnsiConsole.Write("\n");
                 }
             }
@@ -34,44 +63,52 @@ namespace Evtest
             }
         }
 
-        private static void writeDeviceInfo(string pathName)
+        private static void writeDeviceInfo(DeviceDescription deviceDescription, int delay, int period)
         {
-            if (!Device.IsValidDevicePath(pathName))
+            if (deviceDescription.EventCapabilities is null)
             {
-                AnsiConsole.MarkupLine($"""
-                [red]Received path [cyan]{pathName}[/] is not valid.[/]
-                Try another like [bold]/dev/input/eventX[/].
-                """);
-                return;
-            }
-
-            ReadOnlyDevice device;
-
-            try
-            {
-                device = new ReadOnlyDevice(pathName);
-            }
-            catch (UnixIOException e)
-            {
-                AnsiConsole.MarkupLine($"[bold red]Can't open device.[/] Try as [bold purple]sudo[/]");
+                var e = new NullReferenceException("Can't read event capabilities.");
                 AnsiConsole.WriteException(e);
-                return;
+                throw e;
             }
 
             AnsiConsole.MarkupLine($"""
-            Created device from path: [cyan]{pathName}[/]
+            Created device from path: [cyan]{deviceDescription.Path}[/]
             Device info:
-                Name: [bold green]{device.Name}[/]
-                Driver version: [bold purple]{device.DriverVersion}[/]
+                Name: [bold green]{deviceDescription.Name}[/]
+                Driver version: [bold purple]{deviceDescription.DriverVersion}[/]
                 Device ID:
-                    Product: [bold purple]0x{device.Id[IdProperty.Product]:X}[/]
-                    Vendor: [bold purple]0x{device.Id[IdProperty.Vendor]:X}[/]
-                    BusType: [bold purple]0x{device.Id[IdProperty.BusType]:X}[/]
-                    Version: [bold purple]0x{device.Id[IdProperty.Version]:X}[/]
+                    Product: [bold purple]0x{deviceDescription.Id[IdProperty.Product]:X}[/]
+                    Vendor: [bold purple]0x{deviceDescription.Id[IdProperty.Vendor]:X}[/]
+                    BusType: [bold purple]0x{deviceDescription.Id[IdProperty.BusType]:X}[/]
+                    Version: [bold purple]0x{deviceDescription.Id[IdProperty.Version]:X}[/]
             """);
 
-            AnsiConsole.MarkupLine($"Disposing [green]{device.Name}[/]...");
-            device.Dispose();
+            AnsiConsole.MarkupLine("Supported events:");
+
+            foreach (var type in deviceDescription.EventCapabilities.Keys)
+            {
+                string typeName = Evdev.GetEventTypeName((uint)type);
+                AnsiConsole.MarkupLine($"\tEvent type: [bold green]{type}[/] ([purple]{typeName}[/])");
+
+                if (type == EventType.Synchronization) continue;
+                foreach (ushort code in deviceDescription.EventCapabilities[type])
+                {
+                    string codeName = Evdev.GetEventCodeName((uint)type, code);
+                    AnsiConsole.MarkupLine($"\t\tEvent code: [bold green]{code}[/] ([purple]{codeName}[/])");
+                }
+            }
+
+            AnsiConsole.MarkupLine("Other:");
+
+            if (delay != 0 && period != 0)
+            {
+                AnsiConsole.MarkupLine($"""
+                    Repeat:
+                        Delay: [bold purple]{delay}[/]
+                        Period: [bold purple]{period}[/]
+                """);
+            }
         }
     }
 }
