@@ -205,6 +205,10 @@ namespace LibEvdev.Native
         /// <returns>Type name as string</returns>
         /// <exception cref="ExternalException">If received event type is invalid</exception>
         public static string GetEventTypeName(uint type) => EventTypeGetName(type);
+
+        /// <inheritdoc cref="GetEventTypeName"/>
+        public static string GetEventTypeName(EventType type) => EventTypeGetName((uint)type);
+
         /// <summary>
         /// Get event code name by its value & type value.
         /// </summary>
@@ -214,20 +218,22 @@ namespace LibEvdev.Native
         /// <exception cref="ExternalException">If received event code is invalid</exception>
         public static string GetEventCodeName(uint type, uint code) => EventCodeGetName(type, code);
 
+        public static string GetEventCodeName(EventType type, uint code) => EventCodeGetName((uint)type, code);
+
         /// <summary>
         /// Get event type value by its name.
         /// </summary>
         /// <param name="typeName">Event type name</param>
         /// <returns>Event type value</returns>
         /// <exception cref="ExternalException">If received event type name is invalid</exception>
-        public static uint GetEventTypeByName(string typeName)
+        public static EventType GetEventTypeByName(string typeName)
         {
             ArgumentNullException.ThrowIfNull(typeName, nameof(typeName));
             nuint len = (nuint)typeName.Length;
             int res = EventTypeFromNameN(typeName, len);
             if (res < 0)
                 throw AutoExternalException.New();
-            return (uint)res;
+            return (EventType)res;
         }
 
         /// <summary>
@@ -236,14 +242,14 @@ namespace LibEvdev.Native
         /// <param name="codeName">Event code name</param>
         /// <returns>Event code value</returns>
         /// <exception cref="ExternalException">If received event code name is invalid</exception>
-        public static uint GetEventTypeByCodeName(string codeName)
+        public static EventType GetEventTypeByCodeName(string codeName)
         {
             ArgumentNullException.ThrowIfNull(codeName, nameof(codeName));
             nuint len = (nuint)codeName.Length;
             int res = EventTypeFromCodeNameN(codeName, len);
             if (res < 0)
                 throw AutoExternalException.New();
-            return (uint)res;
+            return (EventType)res;
         }
 
         /// <summary>
@@ -264,6 +270,9 @@ namespace LibEvdev.Native
         }
 
         /// <inheritdoc cref="GetEventCodeByName"/>
+        public static uint GetEventCodeByName(EventType type, string codeName) => GetEventCodeByName((uint)type, codeName);
+
+        /// <inheritdoc cref="GetEventCodeByName"/>
         /// <param name="typeName">Event code type name</param>
         /// <param name="codeName">Event code name</param>
         /// <exception cref="ArgumentNullException">If received strings are null.</exception>
@@ -271,7 +280,7 @@ namespace LibEvdev.Native
         {
             ArgumentNullException.ThrowIfNull(typeName, nameof(typeName));
             ArgumentNullException.ThrowIfNull(codeName, nameof(codeName));
-            uint type = GetEventTypeByName(typeName);
+            EventType type = GetEventTypeByName(typeName);
             return GetEventCodeByName(type, codeName);
         }
 
