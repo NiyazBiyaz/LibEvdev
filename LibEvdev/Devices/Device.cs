@@ -95,10 +95,12 @@ namespace LibEvdev.Devices
         public bool HasEvent(uint type, uint? code = null) =>
             Evdev.HasEventType(Dev, type) == 1 && (code is null || Evdev.HasEventCode(Dev, type, (uint)code) == 1);
 
+        public bool HasEvent(EventType type, uint? code = null) => HasEvent((uint)type, code);
+
         public bool HasEvent(string typeName, string? codeName = null)
         {
             ArgumentNullException.ThrowIfNull(typeName);
-            uint type = Evdev.GetEventTypeByName(typeName);
+            EventType type = Evdev.GetEventTypeByName(typeName);
             return HasEvent(type, codeName is null ? null : Evdev.GetEventCodeByName(typeName, codeName));
         }
 

@@ -61,6 +61,9 @@ namespace LibEvdev.Devices
         bool HasEvent(uint type, uint? code = null);
 
         /// <inheritdoc cref="HasEvent"/>
+        public bool HasEvent(EventType type, uint? code = null);
+
+        /// <inheritdoc cref="HasEvent"/>
         /// <param name="typeName">Event type name.</param>
         /// <param name="codeName">[<i>Optional</i>] Event code name. Don't set if you want to check availability only of the
         /// <see cref="typeName"/>.</param>
