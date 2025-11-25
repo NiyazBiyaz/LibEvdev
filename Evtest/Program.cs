@@ -2,7 +2,6 @@
 // See the LICENSE file in the repository root for full license text.
 
 using LibEvdev.Devices;
-using Mono.Unix;
 using Serilog;
 using Spectre.Console;
 
@@ -31,22 +30,7 @@ namespace Evtest
                         return;
                     }
 
-                    IReadOnlyDevice device;
-                    try
-                    {
-                        device = DeviceHelper.OpenReadOnly(pathName);
-                    }
-                    catch (UnixIOException e)
-                    {
-                        if (e.Message.Contains("EACCES"))
-                        {
-                            AnsiConsole.MarkupLine($"[bold red]Can't open device: Permission denied.[/] Try as [bold purple]sudo[/]");
-                            return;
-                        }
-
-                        AnsiConsole.MarkupLine($"[maroon]Can't open device from [cyan]{pathName}[/].[/]");
-                        continue;
-                    }
+                    IReadOnlyDevice device = DeviceHelper.OpenReadOnly(pathName);
 
                     var description = new DeviceDescription(device);
 
@@ -59,9 +43,27 @@ namespace Evtest
             }
             else
             {
-                AnsiConsole.MarkupLine("No devices assigned to use.");
-                AnsiConsole.MarkupLine("At this moment you can't choose any device there, maybe later...");
-                return;
+                AnsiConsole.MarkupLine("[bold]No one device is assigned.[/]");
+
+                List<DeviceDescription> devices = DeviceHelper.GetAllInputDevices()
+                                                              .Select((device) => new DeviceDescription(device))
+                                                              .ToList();
+
+                var deviceToOpen = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Select device to open.")
+                        .PageSize(8)
+                        .MoreChoicesText("[grey](Move up and down to reveal more devices)[/]")
+                        .AddChoices(devices.Select((d) => $"{d.Path} [bold]{d.Name}[/]"))
+                ).Split(" ").First();
+
+                AnsiConsole.MarkupLine($"Your selection: [bold cyan]{deviceToOpen}[/].");
+
+                IReadOnlyDevice device = DeviceHelper.OpenReadOnly(deviceToOpen);
+
+                DeviceInfoPrinter.WriteDeviceInfo(new DeviceDescription(device));
+
+                device.Dispose();
             }
         }
     }
