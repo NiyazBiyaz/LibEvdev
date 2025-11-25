@@ -30,15 +30,14 @@ namespace Evtest
                         return;
                     }
 
-                    IReadOnlyDevice device = DeviceHelper.OpenReadOnly(pathName);
+                    using (var device = DeviceHelper.OpenReadOnly(pathName))
+                    {
+                        var description = new DeviceDescription(device);
 
-                    var description = new DeviceDescription(device);
+                        DeviceInfoPrinter.WriteDeviceInfo(description);
 
-                    DeviceInfoPrinter.WriteDeviceInfo(description);
-
-                    device.Dispose();
-                    AnsiConsole.MarkupLine($"[yellow]Disposing [green]{description.Name}[/]...[/]");
-                    AnsiConsole.Write("\n");
+                        AnsiConsole.Write("\n");
+                    }
                 }
             }
             else
@@ -59,11 +58,8 @@ namespace Evtest
 
                 AnsiConsole.MarkupLine($"Your selection: [bold cyan]{deviceToOpen}[/].");
 
-                IReadOnlyDevice device = DeviceHelper.OpenReadOnly(deviceToOpen);
-
-                DeviceInfoPrinter.WriteDeviceInfo(new DeviceDescription(device));
-
-                device.Dispose();
+                using (var device = DeviceHelper.OpenReadOnly(deviceToOpen))
+                    DeviceInfoPrinter.WriteDeviceInfo(new DeviceDescription(device));
             }
         }
     }
