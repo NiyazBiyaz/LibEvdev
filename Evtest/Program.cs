@@ -2,6 +2,7 @@
 // See the LICENSE file in the repository root for full license text.
 
 using LibEvdev.Devices;
+using Mono.Unix;
 using Serilog;
 using Spectre.Console;
 
@@ -35,8 +36,14 @@ namespace Evtest
                     {
                         device = DeviceHelper.OpenReadOnly(pathName);
                     }
-                    catch (Exception)
+                    catch (UnixIOException e)
                     {
+                        if (e.Message.Contains("EACCES"))
+                        {
+                            AnsiConsole.MarkupLine($"[bold red]Can't open device: Permission denied.[/] Try as [bold purple]sudo[/]");
+                            return;
+                        }
+
                         AnsiConsole.MarkupLine($"[maroon]Can't open device from [cyan]{pathName}[/].[/]");
                         continue;
                     }
