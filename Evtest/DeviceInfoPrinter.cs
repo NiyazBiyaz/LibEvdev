@@ -50,12 +50,11 @@ namespace Evtest
             if (deviceDescription.RepeatInfo is not null)
             {
                 (int delay, int period) = deviceDescription.RepeatInfo.Value;
-                if (delay != 0 && period != 0)
-                    AnsiConsole.MarkupLine($"""
-                        Repeat:
-                            Delay: [bold purple]{delay}[/]
-                            Period: [bold purple]{period}[/]
-                    """);
+                AnsiConsole.MarkupLine($"""
+                    Repeat:
+                        Delay: [bold purple]{delay}[/]
+                        Period: [bold purple]{period}[/]
+                """);
             }
         }
     }
