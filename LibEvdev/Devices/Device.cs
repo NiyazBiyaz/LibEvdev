@@ -175,6 +175,15 @@ namespace LibEvdev.Devices
             return result;
         }
 
+        /// <summary>
+        /// Statically validate path to be able be a evdev device path. It doesn't indicate that this
+        /// path is really exists and you can open it.
+        /// </summary>
+        /// <param name="pathName">Path to the device.</param>
+        /// <returns>
+        /// <see langword="true"/> if path follows to <i>/dev/input/eventX</i> pattern,
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
         public static bool IsValidDevicePath(string pathName)
         {
             ArgumentNullException.ThrowIfNull(pathName);
@@ -186,7 +195,7 @@ namespace LibEvdev.Devices
                 return false;
 
             // last symbols is a number
-            if (!int.TryParse(pathName.AsSpan(dev_path_template.Length), out int _))
+            if (!uint.TryParse(pathName.AsSpan(dev_path_template.Length), out uint _))
                 return false;
 
             return true;

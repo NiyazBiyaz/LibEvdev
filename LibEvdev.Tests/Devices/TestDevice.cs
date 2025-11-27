@@ -21,7 +21,7 @@ public class TestDevice
     [InlineData("/dev/input/event9.0")]
     [InlineData("/dev/input/event9,0")]
     [InlineData("/dev/input/event9.txt")]
-    [InlineData("/dev/input/event-1", Skip = "allow only non-negative numbers")]
+    [InlineData("/dev/input/event-1")]
     [InlineData("/dev/input/event*")]
     public void TestIsValidDevicePath_Bad(string path)
     {
