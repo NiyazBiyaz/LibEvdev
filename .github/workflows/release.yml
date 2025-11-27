@@ -1,0 +1,36 @@
+name: Add new release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version of the release."
+        required: true
+        type: string
+      versionSuffix:
+        description: "Subversion like -unstable."
+        required: false
+        default: ""
+        type: string
+      changelog:
+        description: "Description of the changes in this release."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}-${{ inputs.versionSuffix }}
+          name: "Release ${{ inputs.version }}-${{ inputs.versionSuffix }}"
+          body: ${{ inputs.changelog }}
