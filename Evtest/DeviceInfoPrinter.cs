@@ -57,26 +57,5 @@ namespace Evtest
                 """);
             }
         }
-
-        public static IEnumerable<string> ParseEventsFromEnumerable(IEnumerable<InputEvent> inputEvents)
-        {
-            foreach (var evt in inputEvents)
-            {
-                if (evt.Type == EventType.Synchronization)
-                {
-                    yield return "[bold]-------Sync reported]-------[/]";
-                    continue;
-                }
-
-                DateTime timeStamp = evt.TimeValue.AsDateTime();
-                string typeName = Evdev.GetEventTypeName(evt.Type);
-                string codeName = Evdev.GetEventCodeName(evt.Type, evt.Code);
-
-                yield return $"[gray54]{timeStamp:t}[/] Received event: " +
-                             $"type = [bold green]{evt.Type}[/][purple]{typeName}[/] " +
-                             $"code = [bold green]{evt.Type}[/][purple]{codeName}[/] " +
-                             $"value = [bold green]{evt.Value}[/]";
-            }
-        }
     }
 }
