@@ -1,6 +1,7 @@
 // Copyright (c) NiyazBiyaz <niyazik114422@gmail.com>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
+using System.Runtime.CompilerServices;
 using LibEvdev.Native;
 using Mono.Unix.Native;
 
@@ -59,9 +60,73 @@ namespace LibEvdev.Devices
             }
         }
 
+        public async IAsyncEnumerable<InputEvent> ReadInputEventsAsync(int timeoutPeriod, [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            PollFd[] pollFds = [new PollFd() { FileDescriptor = FileDescriptor, Events = (int)PollEvents.POLLIN }];
+            InputEvent inputEvent = default;
+            ReadStatus status;
+            ReadFlag flag;
+
+            Logger.Information("Start polling events.");
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await pollAsync(pollFds, timeoutPeriod, cancellationToken);
+
+                Logger.Verbose("Can read events");
+                flag = ReadFlag.Normal;
+                bool stop = false;
+                while (!stop)
+                {
+                    status = Evdev.NextEvent(Dev, flag, ref inputEvent);
+                    Logger.Verbose("Event reading result: {ReadStatus}", status);
+
+                    if (status == ReadStatus.Sync)
+                    {
+                        Logger.Warning("Synchronization is requested.");
+                        flag = ReadFlag.Sync;
+                    }
+
+                    else if (status == ReadStatus.Again)
+                    {
+                        Logger.Verbose("No events to read.");
+                        stop = true;
+                        continue;
+                    }
+
+                    else if ((int)status < 0 && status != ReadStatus.Again)
+                        throw AutoExternalException.New(-(int)status);
+
+                    Logger.Verbose("Received event: {InputEvent}", inputEvent);
+                    yield return inputEvent;
+                }
+            }
+        }
+
+        private async ValueTask pollAsync(PollFd[] pollFds, int timeout, CancellationToken token)
+        {
+            if (Evdev.HasEventPending(Dev) == 1)
+                return;
+
+            await Task.Run(() =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    int result = SysCall.poll(pollFds, 1, timeout);
+
+                    if (result > 0)
+                        return;
+                    else if (result == 0)
+                        continue;
+
+                    throw AutoExternalException.New((int)Stdlib.GetLastError());
+                }
+            }, token);
+        }
+
         private bool poll(PollFd[] pollFds, int timeout)
         {
-            int result = SysCall.poll(pollFds, timeout);
+            int result = SysCall.poll(pollFds, 1, timeout);
 
             if (result > 0)
                 return true;

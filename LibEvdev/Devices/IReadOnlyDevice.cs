@@ -8,5 +8,7 @@ namespace LibEvdev.Devices
     public interface IReadOnlyDevice : IDevice
     {
         public IEnumerable<InputEvent> ReadInputEvents(int timeoutPeriod);
+
+        public IAsyncEnumerable<InputEvent> ReadInputEventsAsync(int timeoutPeriod, CancellationToken cancellationToken);
     }
 }
