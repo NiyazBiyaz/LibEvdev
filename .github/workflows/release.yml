@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       versionSuffix:
-        description: "Subversion like -unstable."
+        description: "Subversion like (e.g. '-unstable' or '-latest'."
         required: false
         default: ""
         type: string
@@ -31,6 +31,6 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ inputs.version }}-${{ inputs.versionSuffix }}
-          name: "Release ${{ inputs.version }}-${{ inputs.versionSuffix }}"
+          tag_name: v${{ inputs.version }}${{ inputs.versionSuffix }}
+          name: "Release ${{ inputs.version }}${{ inputs.versionSuffix }}"
           body: ${{ inputs.changelog }}
