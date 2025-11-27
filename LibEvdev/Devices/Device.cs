@@ -186,7 +186,7 @@ namespace LibEvdev.Devices
                 return false;
 
             // last symbols is a number
-            if (!int.TryParse(pathName.AsSpan(dev_path_template.Length), out int _))
+            if (!uint.TryParse(pathName.AsSpan(dev_path_template.Length), out uint _))
                 return false;
 
             return true;
