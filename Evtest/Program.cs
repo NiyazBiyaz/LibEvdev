@@ -59,6 +59,8 @@ namespace Evtest
 
                 using (var device = DeviceHelper.OpenReadOnly(deviceToOpen))
                     DeviceInfoPrinter.WriteDeviceInfo(new DeviceDescription(device));
+
+                await StartInteractiveMode(deviceToOpen);
             }
         }
 
