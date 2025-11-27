@@ -24,14 +24,14 @@ namespace Evtest
                 {
                     validatePath(pathName);
 
-                    using (var device = DeviceHelper.OpenReadOnly(pathName))
-                    {
-                        var description = new DeviceDescription(device);
+                    using var device = DeviceHelper.OpenReadOnly(pathName);
 
-                        DeviceInfoPrinter.WriteDeviceInfo(description);
+                    var description = new DeviceDescription(device);
 
-                        AnsiConsole.Write("\n");
-                    }
+                    DeviceInfoPrinter.WriteDeviceInfo(description);
+
+                    AnsiConsole.Write("\n");
+
                 }
             }
             else if (args.Length == 1)
@@ -77,32 +77,30 @@ namespace Evtest
                 AnsiConsole.MarkupLine($"Events was read: [bold green]{eventsCount}[/]");
             };
 
-            using (var device = DeviceHelper.OpenReadOnly(path))
+            using var device = DeviceHelper.OpenReadOnly(path);
+            var description = new DeviceDescription(device);
+            DeviceInfoPrinter.WriteDeviceInfo(description);
+
+            AnsiConsole.MarkupLine($"[bold]Start receiving events from device [green]{description.Name}[/][/]");
+
+            await foreach (var evt in device.ReadInputEventsAsync(100, cts.Token))
             {
-                var description = new DeviceDescription(device);
-                DeviceInfoPrinter.WriteDeviceInfo(description);
+                eventsCount++;
 
-                AnsiConsole.MarkupLine($"[bold]Start receiving events from device [green]{description.Name}[/][/]");
-
-                await foreach (var evt in device.ReadInputEventsAsync(100, cts.Token))
+                if (evt.Type == EventType.Synchronization)
                 {
-                    eventsCount++;
-
-                    if (evt.Type == EventType.Synchronization)
-                    {
-                        AnsiConsole.MarkupLine("[bold]------------------Sync reported------------------[/]");
-                        continue;
-                    }
-
-                    DateTime timeStamp = evt.TimeValue.AsDateTime();
-                    string typeName = Evdev.GetEventTypeName(evt.Type);
-                    string codeName = Evdev.GetEventCodeName(evt.Type, evt.Code);
-
-                    AnsiConsole.MarkupLine($"[gray54]{timeStamp:t}[/] Received event: " +
-                                           $"type = [bold green]{evt.Type}[/] [purple]{typeName}[/] " +
-                                           $"code = [bold green]{evt.Code}[/] [purple]{codeName}[/] " +
-                                           $"value = [bold green]{evt.Value}[/]");
+                    AnsiConsole.MarkupLine("[bold]------------------Sync reported------------------[/]");
+                    continue;
                 }
+
+                DateTime timeStamp = evt.TimeValue.AsDateTime();
+                string typeName = Evdev.GetEventTypeName(evt.Type);
+                string codeName = Evdev.GetEventCodeName(evt.Type, evt.Code);
+
+                AnsiConsole.MarkupLine($"[gray54]{timeStamp:T}.{timeStamp:fffff}[/] Received event: " +
+                                        $"type = [bold green]{evt.Type}[/] [purple]{typeName}[/] " +
+                                        $"code = [bold green]{evt.Code}[/] [purple]{codeName}[/] " +
+                                        $"value = [bold green]{evt.Value}[/]");
             }
         }
 
