@@ -26,7 +26,7 @@ namespace LibEvdev.UInputWrappers
             if (!buttons.Contains(key))
                 return;
 
-            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)key, 1));
+            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, key, 1));
         }
 
         public void ReleaseButton(Key key)
@@ -34,7 +34,7 @@ namespace LibEvdev.UInputWrappers
             if (!buttons.Contains(key))
                 return;
 
-            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)key, 0));
+            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, key, 0));
         }
 
         public void Move(int x = 0, int y = 0, int wheel = 0)
