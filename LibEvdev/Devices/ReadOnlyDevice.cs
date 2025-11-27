@@ -20,11 +20,8 @@ namespace LibEvdev.Devices
 
             Logger.Information("Start polling events.");
 
-            while (true)
+            while (!StopFlag)
             {
-                if (StopFlag)
-                    break;
-
                 bool canRead = poll(pollFds, timeoutPeriod);
 
                 if (canRead)
