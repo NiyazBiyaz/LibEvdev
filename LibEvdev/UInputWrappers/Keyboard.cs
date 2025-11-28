@@ -13,7 +13,7 @@ namespace LibEvdev.UInputWrappers
         {
         }
 
-        public void PressAsync(ushort code, bool strict = false)
+        public void Press(ushort code, bool strict = false)
         {
             if (!isValidEventCode(code))
             {
@@ -26,7 +26,7 @@ namespace LibEvdev.UInputWrappers
             WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, code, 1));
         }
 
-        public void ReleaseAsync(ushort code, bool strict = false)
+        public void Release(ushort code, bool strict = false)
         {
             if (!isValidEventCode(code))
             {
