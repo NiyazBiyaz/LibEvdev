@@ -24,5 +24,7 @@ namespace LibEvdev.Native
             : this(default, type, code, value)
         {
         }
+
+        public static readonly InputEvent SYNC = new(EventType.Synchronization, 0, 0);
     }
 }
