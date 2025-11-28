@@ -24,15 +24,5 @@ namespace LibEvdev.Native
             : this(default, type, code, value)
         {
         }
-
-        public InputEvent(EventType type, RelativeAxis code, int value)
-            : this(default, type, (ushort)code, value)
-        {
-        }
-
-        public InputEvent(EventType type, Key code, int value)
-            : this(default, type, (ushort)code, value)
-        {
-        }
     }
 }

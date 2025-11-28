@@ -21,20 +21,20 @@ namespace LibEvdev.UInputWrappers
         {
         }
 
-        public void PressButton(Key key)
+        public void PressButton(Key button)
         {
-            if (!buttons.Contains(key))
+            if (!buttons.Contains(button))
                 return;
 
-            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, key, 1));
+            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)button, 1));
         }
 
-        public void ReleaseButton(Key key)
+        public void ReleaseButton(Key button)
         {
-            if (!buttons.Contains(key))
+            if (!buttons.Contains(button))
                 return;
 
-            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, key, 0));
+            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)button, 0));
         }
 
         public void Move(int x = 0, int y = 0, int wheel = 0)
@@ -43,11 +43,11 @@ namespace LibEvdev.UInputWrappers
                 return;
 
             if (x != 0)
-                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, RelativeAxis.X, x));
+                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.X, x));
             if (x != 0)
-                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, RelativeAxis.Y, y));
+                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.Y, y));
             if (wheel != 0)
-                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, RelativeAxis.Wheel, wheel));
+                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.Wheel, wheel));
 
             WriteOnlyDevice.Flush();
         }
