@@ -3,13 +3,13 @@
 
 namespace Evtest.Utils
 {
-    public static class StringExtensions
+    public static class ObjectExtensions
     {
         /// <summary>
-        /// Apply semantic color on this string.
+        /// Apply semantic color on this object.
         /// </summary>
         /// <returns>Markup string with the enabled color value.</returns>
-        public static string Dye(this string str, OutputStringType stringType)
+        public static string Dye(this object obj, OutputStringType stringType)
         {
             string colorMarkup = stringType switch
             {
@@ -25,7 +25,17 @@ namespace Evtest.Utils
                 _ => throw new ArgumentOutOfRangeException(nameof(stringType))
             };
 
-            return $"[{colorMarkup}]{str}[/]";
+            return $"[{colorMarkup}]{obj}[/]";
         }
+
+        public static string DyePath(this object obj) => obj.Dye(OutputStringType.Path);
+        public static string DyeStringValue(this object obj) => obj.Dye(OutputStringType.StringValue);
+        public static string DyeIntegerValue(this object obj) => obj.Dye(OutputStringType.IntegerValue);
+        public static string DyeEnumValue(this object obj) => obj.Dye(OutputStringType.EnumValue);
+        public static string DyeAttention(this object obj) => obj.Dye(OutputStringType.Attention);
+        public static string DyeWarning(this object obj) => obj.Dye(OutputStringType.Warning);
+        public static string DyeError(this object obj) => obj.Dye(OutputStringType.Error);
+        public static string DyeGood(this object obj) => obj.Dye(OutputStringType.Good);
+        public static string DyeDimmed(this object obj) => obj.Dye(OutputStringType.Dimmed);
     }
 }
