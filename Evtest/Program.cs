@@ -37,7 +37,7 @@ namespace Evtest
             else if (args.Length == 1)
             {
                 string path = args.First();
-                await StartInteractiveMode(path);
+                await StartInteractiveModeAsync(path);
             }
             else
             {
@@ -60,11 +60,11 @@ namespace Evtest
                 using (var device = DeviceHelper.OpenReadOnly(deviceToOpen))
                     DeviceInfoPrinter.WriteDeviceInfo(new DeviceDescription(device));
 
-                await StartInteractiveMode(deviceToOpen);
+                await StartInteractiveModeAsync(deviceToOpen);
             }
         }
 
-        public async static Task StartInteractiveMode(string path)
+        public async static Task StartInteractiveModeAsync(string path)
         {
             validatePath(path);
 
@@ -74,7 +74,7 @@ namespace Evtest
             Console.CancelKeyPress += (_, _) =>
             {
                 cts.Cancel();
-                AnsiConsole.MarkupLine($"Events was read: [bold green]{eventsCount}[/]");
+                AnsiConsole.MarkupLine($"Device [cyan]{path}[/]: Events was read: [bold green]{eventsCount}[/]");
             };
 
             using var device = DeviceHelper.OpenReadOnly(path);
