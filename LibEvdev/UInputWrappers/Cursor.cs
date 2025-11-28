@@ -47,15 +47,15 @@ namespace LibEvdev.UInputWrappers
             WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)button, 0));
         }
 
-        public void Move(int x = 0, int y = 0, int wheel = 0)
+        public void Move(int horizontal = 0, int vertical = 0, int wheel = 0)
         {
-            if (x == 0 && y == 0 && wheel == 0)
+            if (horizontal == 0 && vertical == 0 && wheel == 0)
                 return;
 
-            if (x != 0)
-                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.X, x));
-            if (x != 0)
-                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.Y, y));
+            if (horizontal != 0)
+                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.X, horizontal));
+            if (vertical != 0)
+                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.Y, vertical));
             if (wheel != 0)
                 WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.Wheel, wheel));
 
