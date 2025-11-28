@@ -13,19 +13,28 @@ namespace LibEvdev.UInputWrappers
         {
         }
 
-        public void PressAsync(ushort code)
+        public void PressAsync(ushort code, bool strict = false)
         {
             if (!isValidEventCode(code))
+            {
+                if (strict)
+                    throw new ArgumentOutOfRangeException(nameof(code));
+
                 return;
+            }
 
             WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, code, 1));
         }
 
-        public void ReleaseAsync(ushort code)
+        public void ReleaseAsync(ushort code, bool strict = false)
         {
             if (!isValidEventCode(code))
-                return;
+            {
+                if (strict)
+                    throw new ArgumentOutOfRangeException(nameof(code));
 
+                return;
+            }
             WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, code, 0));
         }
 

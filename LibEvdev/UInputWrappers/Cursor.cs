@@ -21,18 +21,28 @@ namespace LibEvdev.UInputWrappers
         {
         }
 
-        public void PressButton(Key button)
+        public void PressButton(Key button, bool strict = false)
         {
             if (!buttons.Contains(button))
+            {
+                if (strict)
+                    throw new ArgumentOutOfRangeException(nameof(button));
+
                 return;
+            }
 
             WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)button, 1));
         }
 
-        public void ReleaseButton(Key button)
+        public void ReleaseButton(Key button, bool strict = false)
         {
             if (!buttons.Contains(button))
+            {
+                if (strict)
+                    throw new ArgumentOutOfRangeException(nameof(button));
+
                 return;
+            }
 
             WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)button, 0));
         }
