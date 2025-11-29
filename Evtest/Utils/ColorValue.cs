@@ -9,7 +9,7 @@ namespace Evtest.Utils
         public const string STRING_VALUE = "purple";
         public const string INTEGER_VALUE = "green";
         public const string ENUM_VALUE = "navy";
-        public const string ATTENTION = "yellow4";
+        public const string ATTENTION = "gold1";
         public const string WARNING = "yellow";
         public const string ERROR = "red";
         public const string GOOD = "lime";
