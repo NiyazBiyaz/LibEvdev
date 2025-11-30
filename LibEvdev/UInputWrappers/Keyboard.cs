@@ -23,7 +23,7 @@ namespace LibEvdev.UInputWrappers
                 return;
             }
 
-            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, code, 1));
+            WriteOnlyDevice.WriteFrame(new InputEventRaw(EventType.Key, code, 1));
         }
 
         public void Release(ushort code, bool strict = false)
@@ -35,7 +35,7 @@ namespace LibEvdev.UInputWrappers
 
                 return;
             }
-            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, code, 0));
+            WriteOnlyDevice.WriteFrame(new InputEventRaw(EventType.Key, code, 0));
         }
 
         private bool isValidEventCode(ushort code) => WriteOnlyDevice.HasEvent(EventType.Key, code);

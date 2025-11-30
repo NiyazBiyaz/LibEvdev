@@ -44,20 +44,20 @@ namespace LibEvdev.Devices
         /// for not miss the synchronization with kernel.
         /// </summary>
         /// <param name="inputEvent"></param>
-        public void Write(InputEvent inputEvent);
+        public void Write(InputEventRaw inputEvent);
 
         /// <summary>
         /// <see cref="Write"/> synchronization event to the device.
         /// </summary>
         public void Flush()
         {
-            Write(new InputEvent(EventType.Synchronization, 0, 0));
+            Write(new InputEventRaw(EventType.Synchronization, 0, 0));
         }
 
         /// <summary>
         /// <see cref="Write"/> one event and flush it.
         /// </summary>
-        public void WriteFrame(InputEvent inputEvent)
+        public void WriteFrame(InputEventRaw inputEvent)
         {
             Write(inputEvent);
             Flush();
@@ -67,7 +67,7 @@ namespace LibEvdev.Devices
         /// <see cref="Write"/> some events and flush it.
         /// </summary>
         /// <param name="inputEvents"></param>
-        public void WriteFrame(IEnumerable<InputEvent> inputEvents)
+        public void WriteFrame(IEnumerable<InputEventRaw> inputEvents)
         {
             foreach (var evt in inputEvents)
                 Write(evt);

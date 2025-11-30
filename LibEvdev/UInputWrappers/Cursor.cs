@@ -31,7 +31,7 @@ namespace LibEvdev.UInputWrappers
                 return;
             }
 
-            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)button, 1));
+            WriteOnlyDevice.WriteFrame(new InputEventRaw(EventType.Key, (ushort)button, 1));
         }
 
         public void ReleaseButton(Key button, bool strict = false)
@@ -44,7 +44,7 @@ namespace LibEvdev.UInputWrappers
                 return;
             }
 
-            WriteOnlyDevice.WriteFrame(new InputEvent(EventType.Key, (ushort)button, 0));
+            WriteOnlyDevice.WriteFrame(new InputEventRaw(EventType.Key, (ushort)button, 0));
         }
 
         public void Move(int horizontal = 0, int vertical = 0, int wheel = 0)
@@ -53,11 +53,11 @@ namespace LibEvdev.UInputWrappers
                 return;
 
             if (horizontal != 0)
-                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.X, horizontal));
+                WriteOnlyDevice.Write(new InputEventRaw(EventType.Relative, (ushort)RelativeAxis.X, horizontal));
             if (vertical != 0)
-                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.Y, vertical));
+                WriteOnlyDevice.Write(new InputEventRaw(EventType.Relative, (ushort)RelativeAxis.Y, vertical));
             if (wheel != 0)
-                WriteOnlyDevice.Write(new InputEvent(EventType.Relative, (ushort)RelativeAxis.Wheel, wheel));
+                WriteOnlyDevice.Write(new InputEventRaw(EventType.Relative, (ushort)RelativeAxis.Wheel, wheel));
 
             WriteOnlyDevice.Flush();
         }

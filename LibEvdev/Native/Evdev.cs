@@ -167,7 +167,7 @@ namespace LibEvdev.Native
         #region Event handling
 
         [LibraryImport("libevdev.so.2", EntryPoint = "libevdev_next_event", SetLastError = true)]
-        internal static partial ReadStatus NextEvent(nint dev, ReadFlag flags, ref InputEvent ev);
+        internal static partial ReadStatus NextEvent(nint dev, ReadFlag flags, ref InputEventRaw ev);
 
         [LibraryImport("libevdev.so.2", EntryPoint = "libevdev_has_event_pending", SetLastError = true)]
         internal static partial int HasEventPending(nint dev);
