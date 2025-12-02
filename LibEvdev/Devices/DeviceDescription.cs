@@ -71,19 +71,19 @@ namespace LibEvdev.Devices
             {
                 {EventType.Synchronization, []},
                 {EventType.Key, [
-                    (ushort)Key.ButtonLeft,
-                    (ushort)Key.ButtonRight,
-                    (ushort)Key.ButtonMiddle,
-                    (ushort)Key.ButtonSide,
-                    (ushort)Key.ButtonExtra
+                    (ushort)Key.BTN_LEFT,
+                    (ushort)Key.BTN_RIGHT,
+                    (ushort)Key.BTN_MIDDLE,
+                    (ushort)Key.BTN_SIDE,
+                    (ushort)Key.BTN_EXTRA
                 ]},
                 {EventType.Relative, [
-                    (ushort)RelativeAxis.X,
-                    (ushort)RelativeAxis.Y,
-                    (ushort)RelativeAxis.Wheel,
-                    (ushort)RelativeAxis.WheelHighResolution,
+                    (ushort)Relative.REL_X,
+                    (ushort)Relative.REL_Y,
+                    (ushort)Relative.REL_WHEEL,
+                    (ushort)Relative.REL_WHEEL_HI_RES,
                 ]},
-                {EventType.Miscellaneous, [ (ushort)Miscellaneous.ScanCode ]}
+                {EventType.Miscellaneous, [ (ushort)Miscellaneous.MSC_SCAN ]}
             }
         };
 
