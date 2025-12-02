@@ -780,14 +780,14 @@ namespace LibEvdev.Native
         LED_MAX = 0xf,
         LED_CNT = LED_MAX + 1,
     }
-    public enum Sounds : ushort
+    public enum Repeat : ushort
     {
         REP_DELAY = 0x0,
         REP_PERIOD = 0x1,
         REP_MAX = 0x1,
         REP_CNT = REP_MAX + 1,
     }
-    public enum Repeat : ushort
+    public enum Sounds : ushort
     {
         SND_CLICK = 0x0,
         SND_BELL = 0x1,

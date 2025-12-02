@@ -94,8 +94,8 @@ module Event =
         | "MSC" :: _ -> Some EventType.Miscellaneous
         | "SW" :: _ -> Some EventType.Switch
         | "LED" :: _ -> Some EventType.Led
-        | "REP" :: _ -> Some EventType.Sounds
-        | "SND" :: _ -> Some EventType.Repeat
+        | "SND" :: _ -> Some EventType.Sounds
+        | "REP" :: _ -> Some EventType.Repeat
         | _ -> None
 
     let createEventCode (constant: Constant) =
