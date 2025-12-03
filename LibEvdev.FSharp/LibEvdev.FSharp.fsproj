@@ -5,9 +5,15 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup><Compile Include="Types.fs" />
-    <ProjectReference Include="..\LibEvdev\LibEvdev.csproj" /><Compile Include="Library.fs" />
+  <!-- compilation group -->
+  <ItemGroup>  
+    <Compile Include="Types.fs" />
+    <Compile Include="UInput.fs" />
     
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LibEvdev\LibEvdev.csproj" />
   </ItemGroup>
 
 </Project>
