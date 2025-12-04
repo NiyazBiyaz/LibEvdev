@@ -1,2 +1,9 @@
-﻿// For more information see https://aka.ms/fsharp-console-apps
-printfn "Hello from F#"
+﻿namespace evtest
+
+open evtest.Output
+
+module Program =
+    [<EntryPoint>]
+    let main args =
+        Console.markupLine (dim (italic "There's nothing here yet..."))
+        0
