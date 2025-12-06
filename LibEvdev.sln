@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibEvdev.Tests", "LibEvdev.
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LibEvdev.FSharp", "LibEvdev.FSharp\LibEvdev.FSharp.fsproj", "{6C78B7A3-7B86-4369-B32F-9E9BBEB0848C}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "evtest", "evtest\evtest.fsproj", "{26BDBC59-755F-4F1B-A0C5-308F87707BE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evtest", "Evtest\Evtest.csproj", "{9E33D21E-5802-4FCD-8135-4B0D3E57091B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,10 +28,10 @@ Global
 		{6C78B7A3-7B86-4369-B32F-9E9BBEB0848C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C78B7A3-7B86-4369-B32F-9E9BBEB0848C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C78B7A3-7B86-4369-B32F-9E9BBEB0848C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26BDBC59-755F-4F1B-A0C5-308F87707BE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26BDBC59-755F-4F1B-A0C5-308F87707BE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26BDBC59-755F-4F1B-A0C5-308F87707BE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26BDBC59-755F-4F1B-A0C5-308F87707BE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E33D21E-5802-4FCD-8135-4B0D3E57091B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E33D21E-5802-4FCD-8135-4B0D3E57091B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E33D21E-5802-4FCD-8135-4B0D3E57091B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E33D21E-5802-4FCD-8135-4B0D3E57091B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
