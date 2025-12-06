@@ -1,6 +1,7 @@
 // Copyright (c) NiyazBiyaz <niyazik114422@gmail.com>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
+using Evtest.Utils;
 using LibEvdev.Devices;
 using LibEvdev.Native;
 using Spectre.Console;
@@ -19,15 +20,16 @@ namespace Evtest
             }
 
             AnsiConsole.MarkupLine($"""
-            Created device from path: [cyan]{deviceDescription.Path}[/]
+            Created device from path: {deviceDescription.Path?.DyePath() ?? "N/A".DyeWarning()}
             Device info:
-                Name: [bold green]{deviceDescription.Name}[/]
-                Driver version: [bold purple]{deviceDescription.DriverVersion}[/]
+                Name: [bold]{deviceDescription.Name.DyeStringValue()}[/]
+                Phys: [bold]{deviceDescription.Phys?.DyePath() ?? "N/A".DyeWarning()}[/]
+                Driver version: [bold]{deviceDescription.DriverVersion?.DyeIntegerValue() ?? "N/A".DyeWarning()}[/]
                 Device ID:
-                    Product: [bold purple]0x{deviceDescription.Id[IdProperty.Product]:X}[/]
-                    Vendor: [bold purple]0x{deviceDescription.Id[IdProperty.Vendor]:X}[/]
-                    BusType: [bold purple]0x{deviceDescription.Id[IdProperty.BusType]:X}[/]
-                    Version: [bold purple]0x{deviceDescription.Id[IdProperty.Version]:X}[/]
+                    Product: [bold]{deviceDescription.Id[IdProperty.Product].DyeIntegerValue()}[/]
+                    Vendor: [bold]{deviceDescription.Id[IdProperty.Vendor].DyeIntegerValue()}[/]
+                    BusType: [bold]{deviceDescription.Id[IdProperty.BusType].DyeIntegerValue()}[/]
+                    Version: [bold]{deviceDescription.Id[IdProperty.Version].DyeIntegerValue()}[/]
             """);
 
             AnsiConsole.MarkupLine("Supported events:");
@@ -35,13 +37,13 @@ namespace Evtest
             foreach (var type in deviceDescription.EventCapabilities.Keys)
             {
                 string typeName = Evdev.GetEventTypeName((uint)type);
-                AnsiConsole.MarkupLine($"\tEvent type: [bold green]{type}[/] ([purple]{typeName}[/])");
+                AnsiConsole.MarkupLine($"\tEvent type: [bold]{type.DyeEnumValue()}[/] ({typeName.DyeStringValue()})");
 
                 if (type == EventType.Synchronization) continue;
                 foreach (ushort code in deviceDescription.EventCapabilities[type])
                 {
                     string codeName = Evdev.GetEventCodeName((uint)type, code);
-                    AnsiConsole.MarkupLine($"\t\tEvent code: [bold green]{code}[/] ([purple]{codeName}[/])");
+                    AnsiConsole.MarkupLine($"\t\tEvent code: [bold]{code.DyeIntegerValue()}[/] ({codeName.DyeStringValue()})");
                 }
             }
 
@@ -52,8 +54,8 @@ namespace Evtest
                 (int delay, int period) = deviceDescription.RepeatInfo.Value;
                 AnsiConsole.MarkupLine($"""
                     Repeat:
-                        Delay: [bold purple]{delay}[/]
-                        Period: [bold purple]{period}[/]
+                        Delay: [bold]{delay.DyeIntegerValue()}[/]
+                        Period: [bold]{period.DyeIntegerValue()}[/]
                 """);
             }
         }
