@@ -9,6 +9,10 @@ namespace LibEvdev.Devices
 {
     public class ReadOnlyDevice(string path) : Device(path), IReadOnlyDevice
     {
+        /// <summary>
+        /// Stop flag for end read loop if. It works only for synchronous loop, for
+        /// async use <see cref="CancellationToken"/> parameter.
+        /// </summary>
         public bool StopFlag { get; set; }
 
         public IEnumerable<InputEventRaw> ReadInputEvents(int timeoutPeriod)
@@ -17,6 +21,8 @@ namespace LibEvdev.Devices
             InputEventRaw inputEvent = default;
             ReadStatus status;
             ReadFlag flag;
+
+            InputEventRaw[] eventsFrame = new InputEventRaw[16];
 
             Logger.Information("Start polling events.");
 
@@ -29,6 +35,7 @@ namespace LibEvdev.Devices
                     Logger.Verbose("Can read events.");
                     flag = ReadFlag.Normal;
                     bool stop = false;
+                    int wasRead = 0;
                     while (!stop)
                     {
                         status = Evdev.NextEvent(Dev, flag, ref inputEvent);
@@ -51,8 +58,13 @@ namespace LibEvdev.Devices
                             throw AutoExternalException.New(-(int)status);
 
                         Logger.Verbose("Received event: {InputEvent}", inputEvent);
-                        yield return inputEvent;
+                        eventsFrame[wasRead++] = inputEvent;
                     }
+
+                    foreach (var evt in eventsFrame)
+                        yield return evt;
+
+                    Array.Clear(eventsFrame);
                 }
             }
         }
@@ -64,6 +76,8 @@ namespace LibEvdev.Devices
             ReadStatus status;
             ReadFlag flag;
 
+            InputEventRaw[] eventsFrame = new InputEventRaw[32];
+
             Logger.Information("Start polling events.");
 
             while (!cancellationToken.IsCancellationRequested)
@@ -73,6 +87,7 @@ namespace LibEvdev.Devices
                 Logger.Verbose("Can read events");
                 flag = ReadFlag.Normal;
                 bool stop = false;
+                int wasRead = 0;
                 while (!stop)
                 {
                     status = Evdev.NextEvent(Dev, flag, ref inputEvent);
@@ -95,8 +110,13 @@ namespace LibEvdev.Devices
                         throw AutoExternalException.New(-(int)status);
 
                     Logger.Verbose("Received event: {InputEvent}", inputEvent);
-                    yield return inputEvent;
+                    eventsFrame[wasRead++] = inputEvent;
                 }
+
+                foreach (var evt in eventsFrame)
+                    yield return evt;
+
+                Array.Clear(eventsFrame);
             }
         }
 
