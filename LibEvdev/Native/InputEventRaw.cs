@@ -13,18 +13,18 @@ namespace LibEvdev.Native
     /// <param name="Code">Event code.</param>
     /// <param name="Value">Event value.</param>
     [StructLayout(LayoutKind.Sequential)]
-    public readonly record struct InputEvent(TimeValue TimeValue, EventType Type, ushort Code, int Value)
+    public readonly record struct InputEventRaw(TimeValue TimeValue, EventType Type, ushort Code, int Value)
     {
-        public InputEvent(ushort type, ushort code, int value)
+        public InputEventRaw(ushort type, ushort code, int value)
             : this(default, (EventType)type, code, value)
         {
         }
 
-        public InputEvent(EventType type, ushort code, int value)
+        public InputEventRaw(EventType type, ushort code, int value)
             : this(default, type, code, value)
         {
         }
 
-        public static readonly InputEvent SYNC = new(EventType.Synchronization, 0, 0);
+        public static readonly InputEventRaw SYNC = new(EventType.Synchronization, 0, 0);
     }
 }

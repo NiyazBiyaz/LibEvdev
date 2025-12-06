@@ -11,10 +11,10 @@ namespace LibEvdev.Devices
     {
         public bool StopFlag { get; set; }
 
-        public IEnumerable<InputEvent> ReadInputEvents(int timeoutPeriod)
+        public IEnumerable<InputEventRaw> ReadInputEvents(int timeoutPeriod)
         {
             PollFd[] pollFds = [new PollFd() { FileDescriptor = FileDescriptor, Events = (int)PollEvents.POLLIN }];
-            InputEvent inputEvent = default;
+            InputEventRaw inputEvent = default;
             ReadStatus status;
             ReadFlag flag;
 
@@ -57,10 +57,10 @@ namespace LibEvdev.Devices
             }
         }
 
-        public async IAsyncEnumerable<InputEvent> ReadInputEventsAsync(int timeoutPeriod, [EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<InputEventRaw> ReadInputEventsAsync(int timeoutPeriod, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             PollFd[] pollFds = [new PollFd() { FileDescriptor = FileDescriptor, Events = (int)PollEvents.POLLIN }];
-            InputEvent inputEvent = default;
+            InputEventRaw inputEvent = default;
             ReadStatus status;
             ReadFlag flag;
 

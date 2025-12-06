@@ -59,7 +59,7 @@ namespace LibEvdev.Devices
 
         public void Disable(EventType type, uint code) => Evdev.DisableEventCode(Dev, (uint)type, code);
 
-        public void Write(InputEvent inputEvent)
+        public void Write(InputEventRaw inputEvent)
         {
             Evdev.UinputWriteEvent(uiDev, (uint)inputEvent.Type, inputEvent.Code, inputEvent.Value);
         }
