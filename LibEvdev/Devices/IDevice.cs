@@ -13,6 +13,11 @@ namespace LibEvdev.Devices
         public string Name { get; }
 
         /// <summary>
+        /// File descriptor of the device.
+        /// </summary>
+        public int FileDescriptor { get; }
+
+        /// <summary>
         /// Path that was used to open this device. <i>N/A</i> if device was opened by other way.
         /// </summary>
         public string Path { get; }

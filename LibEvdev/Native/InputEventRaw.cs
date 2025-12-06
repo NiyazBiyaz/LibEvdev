@@ -26,5 +26,7 @@ namespace LibEvdev.Native
         }
 
         public static readonly InputEventRaw SYNC = new(EventType.Synchronization, 0, 0);
+
+        public static readonly InputEventRaw TIMER = new(EventType.Repeat, (ushort)Devices.Timer.Repeat, 0);
     }
 }
