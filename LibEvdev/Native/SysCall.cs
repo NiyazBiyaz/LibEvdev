@@ -7,8 +7,7 @@ namespace LibEvdev.Native
 {
     public static partial class SysCall
     {
-        [LibraryImport("libc", SetLastError = true)]
-        internal static partial int poll(PollFd[] fds, int timeout);
+        #region System IO
 
         [LibraryImport("libc", SetLastError = true)]
         internal static partial int poll(PollFd[] fds, int nfds, int timeout);
@@ -21,13 +20,24 @@ namespace LibEvdev.Native
 
         [LibraryImport("libc", SetLastError = true)]
         internal static partial int close(int fd);
-    }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct PollFd
-    {
-        public int FileDescriptor;
-        public short Events;
-        public short Revents;
+        [LibraryImport("libc", SetLastError = true)]
+        internal static unsafe partial nint read(int fd, void* buf, nuint nbytes);
+
+        #endregion
+
+        #region TimeFd
+
+        [LibraryImport("libc", SetLastError = true)]
+        internal static partial int timerfd_create(ClockId clockid, int flags);
+
+        [LibraryImport("libc", SetLastError = true)]
+        internal static partial int timerfd_settime(int fd, int flags,
+                                    ref IntervalTimerSpec newValue, ref IntervalTimerSpec oldValue);
+
+        [LibraryImport("libc", SetLastError = true)]
+        internal static partial int timerfd_gettime(int fd, ref IntervalTimerSpec currValue);
+
+        #endregion
     }
 }

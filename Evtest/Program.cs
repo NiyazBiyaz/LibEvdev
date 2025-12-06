@@ -1,6 +1,7 @@
 ﻿// Copyright (c) NiyazBiyaz <niyazik114422@gmail.com>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
+using System.Runtime.InteropServices;
 using LibEvdev.Devices;
 using LibEvdev.Native;
 using Serilog;
@@ -83,7 +84,10 @@ namespace Evtest
 
             AnsiConsole.MarkupLine($"[bold]Start receiving events from device [green]{description.Name}[/][/]");
 
-            await foreach (var evt in device.ReadInputEventsAsync(100, cts.Token))
+            using var timer = new TimerDevice(new IntervalTimerSpec(TimeValue.FromMilliseconds(1500), TimeValue.FromMilliseconds(300)));
+
+            var scanner = new Scanner([device, timer]);
+            foreach (var evt in scanner.ReadInputEvents(100, cts.Token))
             {
                 eventsCount++;
 
@@ -95,7 +99,15 @@ namespace Evtest
 
                 DateTime timeStamp = evt.TimeValue.AsDateTime();
                 string typeName = Evdev.GetEventTypeName(evt.Type);
-                string codeName = Evdev.GetEventCodeName(evt.Type, evt.Code);
+                string codeName;
+                try
+                {
+                    codeName = Evdev.GetEventCodeName(evt.Type, evt.Code);
+                }
+                catch (ExternalException)
+                {
+                    codeName = evt.Code.ToString();
+                }
 
                 AnsiConsole.MarkupLine($"[gray54]{timeStamp:T}.{timeStamp:fffff}[/] Received event: " +
                                         $"type = [bold green]{evt.Type}[/] [purple]{typeName}[/] " +

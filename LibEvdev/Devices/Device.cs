@@ -11,7 +11,7 @@ namespace LibEvdev.Devices
     public abstract class Device : IDevice
     {
         protected nint Dev;
-        protected int FileDescriptor = -1;
+        public int FileDescriptor { get; private set; } = -1;
 
         protected ILogger Logger => Log.ForContext("SourceContext", "LibEvdev.Devices.Device")
                                        .ForContext("DevicePath", Path);
@@ -206,7 +206,7 @@ namespace LibEvdev.Devices
             if (Dev != nint.Zero)
                 Evdev.Free(Dev);
             if (FileDescriptor >= 0)
-                Syscall.close(FileDescriptor);
+                SysCall.close(FileDescriptor);
             GC.SuppressFinalize(this);
         }
     }
