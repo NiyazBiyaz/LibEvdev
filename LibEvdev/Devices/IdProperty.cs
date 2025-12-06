@@ -3,7 +3,7 @@
 
 namespace LibEvdev.Devices
 {
-    public enum IdProperty
+    public enum IdProperty : byte
     {
         BusType,
         Vendor,

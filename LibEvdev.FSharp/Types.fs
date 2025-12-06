@@ -6,6 +6,7 @@ open LanguagePrimitives
 
 [<AutoOpen>]
 module Event =
+    [<Struct>]
     type KeyAction =
         | Press
         | Release
@@ -29,16 +30,17 @@ module Event =
 
     /// Represents `libevdev` input event information with more
     /// readable fields and enum members.
+    [<Struct>]
     type public InputEvent =
-        | SyncEvent of Code: Synchronization * Value: int * Time: DateTime
-        | KeyEvent of Code: Key * Action: KeyAction * Time: DateTime
-        | RelativeEvent of Code: Relative * Step: int * Time: DateTime
-        | AbsoluteEvent of Code: Absolute * Value: int * Time: DateTime
+        | SyncEvent of Type: Synchronization * Value: int * Time: DateTime
+        | KeyEvent of Key: Key * Action: KeyAction * Time: DateTime
+        | RelativeEvent of Axis: Relative * Step: int * Time: DateTime
+        | AbsoluteEvent of Abs: Absolute * Value: int * Time: DateTime
         | MiscEvent of Code: Miscellaneous * Value: int * Time: DateTime
-        | SwitchEvent of Code: Switch * NewState: int * Time: DateTime
-        | LedEvent of Code: Led * Value: int * Time: DateTime
-        | SoundsEvent of Code: Sounds * Value: int * Time: DateTime
-        | RepeatEvent of Code: Repeat * Duration: int * Time: DateTime
+        | SwitchEvent of Switched: Switch * NewState: int * Time: DateTime
+        | LedEvent of Led: Led * Value: int * Time: DateTime
+        | SoundsEvent of Sound: Sounds * Value: int * Time: DateTime
+        | RepeatEvent of Repeat: Repeat * Duration: int * Time: DateTime
 
     let inline private enum16<'TEnum when 'TEnum: enum<uint16>> (value: uint16) =
         EnumOfValue<uint16, 'TEnum> value
