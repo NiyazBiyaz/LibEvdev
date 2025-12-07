@@ -16,7 +16,7 @@ namespace LibEvdev.Native
     {
         #region Initialization and setup
 
-        [LibraryImport("libevdev.so.2", EntryPoint = "libdevdev_new", SetLastError = true)]
+        [LibraryImport("libevdev.so.2", EntryPoint = "libevdev_new", SetLastError = true)]
         internal static partial nint New();
 
         [LibraryImport("libevdev.so.2", EntryPoint = "libevdev_new_from_fd", SetLastError = true)]
