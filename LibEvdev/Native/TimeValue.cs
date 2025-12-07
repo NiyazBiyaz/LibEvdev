@@ -11,7 +11,7 @@ namespace LibEvdev.Native
     /// <param name="Seconds">Time value in <i>Unix time format</i> as 64-bit signed-integer</param>
     /// <param name="Microseconds">
     /// Time value in microseconds starting from the integer value of Unix-format.
-    /// Value range: [<b>0 - 999 999 999</b>]
+    /// Value range: [<b>0 - 999 999</b>]
     /// </param>
     [StructLayout(LayoutKind.Sequential)]
     public readonly record struct TimeValue(

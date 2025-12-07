@@ -32,8 +32,8 @@ namespace LibEvdev.Native
         internal static partial int timerfd_create(ClockId clockid, int flags);
 
         [LibraryImport("libc", SetLastError = true)]
-        internal static partial int timerfd_settime(int fd, int flags,
-                                    ref IntervalTimerSpec newValue, ref IntervalTimerSpec oldValue);
+        internal static unsafe partial int timerfd_settime(int fd, int flags,
+                                    ref IntervalTimerSpec newValue, void* oldValue);
 
         [LibraryImport("libc", SetLastError = true)]
         internal static partial int timerfd_gettime(int fd, ref IntervalTimerSpec currValue);

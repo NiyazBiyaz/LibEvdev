@@ -18,7 +18,11 @@ namespace LibEvdev.Devices
             if (FileDescriptor < 0)
                 throw AutoExternalException.New();
 
-            int res = SysCall.timerfd_settime(FileDescriptor, 0, ref timerSpec, ref this.timerSpec);
+            int res;
+            unsafe
+            {
+                res = SysCall.timerfd_settime(FileDescriptor, 0, ref timerSpec, null);
+            }
             if (res < 0)
                 throw AutoExternalException.New();
         }
@@ -30,18 +34,17 @@ namespace LibEvdev.Devices
             long expirations = 0;
             SysCall.read(FileDescriptor, &expirations, 8);
 
-            for (int i = 0; i < expirations * 2; i += 2)
-            {
-                eventFrame[i] = InputEventRaw.TIMER;
-                eventFrame[i + 1] = InputEventRaw.SYNC;
-            }
+            if (expirations <= 0)
+                return 0;
 
-            return (int)expirations * 2;
+            int i = 0;
+            for (; i < expirations && i < eventFrame.Length; i++)
+                eventFrame[i] = InputEventRaw.TIMER;
+
+            return i;
         }
 
-        public bool CanRead() => false; // Wait it on FD, please
-
-        ~TimerDevice() { Dispose(); }
+        public bool CanRead() => throw new NotSupportedException(); // Wait it on FD, please
 
         public void Dispose()
         {

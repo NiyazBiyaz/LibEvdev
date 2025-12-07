@@ -7,7 +7,7 @@ namespace LibEvdev.Native
 {
     [StructLayout(LayoutKind.Sequential)]
     public record struct IntervalTimerSpec(
-        TimeValue Interval,
-        TimeValue Value
+        TimeSpec Interval,
+        TimeSpec Value
     );
 }

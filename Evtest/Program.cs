@@ -84,7 +84,11 @@ namespace Evtest
 
             AnsiConsole.MarkupLine($"[bold]Start receiving events from device [green]{description.Name}[/][/]");
 
-            using var timer = new TimerDevice(new IntervalTimerSpec(TimeValue.FromMilliseconds(1500), TimeValue.FromMilliseconds(300)));
+            using var timer = new TimerDevice(new IntervalTimerSpec() with
+            {
+                Value = TimeSpec.FromMilliseconds(1000),
+                Interval = TimeSpec.FromMilliseconds(100)
+            });
 
             var scanner = new Scanner([device, timer]);
             foreach (var evt in scanner.ReadInputEvents(100, cts.Token))
