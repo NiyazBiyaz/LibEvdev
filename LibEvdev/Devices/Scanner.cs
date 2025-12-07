@@ -27,7 +27,7 @@ namespace LibEvdev.Devices
 
         public IEnumerable<InputEventRaw> ReadInputEvents(int timeoutPeriod, CancellationToken cancel)
         {
-            var eventFrame = new InputEventRaw[12];
+            var eventFrame = new InputEventRaw[32];
 
             logger.Information("Start reading events");
             while (!cancel.IsCancellationRequested)
@@ -41,7 +41,7 @@ namespace LibEvdev.Devices
                     {
                         if (canRead(pollFds[devIndex]))
                         {
-                            int wasRead = devices[devIndex].ReadEventFrame(eventFrame.AsSpan());
+                            int wasRead = devices[devIndex].ReadEventFrame(eventFrame);
 
                             for (int evtIndex = 0; evtIndex < wasRead; evtIndex++)
                                 yield return eventFrame[evtIndex];
