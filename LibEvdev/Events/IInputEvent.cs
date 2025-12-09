@@ -38,10 +38,9 @@ namespace LibEvdev.Events
                 case EventType.Sounds:
                     return new SoundsEvent(raw);
                 case EventType.Repeat:
-                    if (raw.Code > (ushort)Repeat.REP_CNT)
-                        return new RepeatEvent(raw);
-                    else
-                        return new TimerEvent(raw);
+                    return new RepeatEvent(raw);
+                case EventType.Timer:
+                    return new TimerEvent(raw);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(raw), "Event type does not match with supported event types.");
             }

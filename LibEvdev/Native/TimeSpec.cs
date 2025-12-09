@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace LibEvdev.Native
 {
     [StructLayout(LayoutKind.Sequential)]
-    public record struct TimeSpec(
+    public readonly record struct TimeSpec(
         long Seconds,
         long NanoSeconds
     )

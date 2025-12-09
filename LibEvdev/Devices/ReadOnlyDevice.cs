@@ -7,11 +7,9 @@ namespace LibEvdev.Devices
 {
     public class ReadOnlyDevice(string path) : Device(path), IReadOnlyDevice
     {
-        public bool CanRead() => Evdev.HasEventPending(Dev) == 1;
-
         public int ReadEventFrame(Span<InputEventRaw> eventFrame)
         {
-            if (!CanRead())
+            if (!canRead())
                 throw new NotSupportedException("No events to read.");
 
             InputEventRaw inputEvent = default;
@@ -46,5 +44,7 @@ namespace LibEvdev.Devices
 
             return wasRead;
         }
+
+        private bool canRead() => Evdev.HasEventPending(Dev) == 1;
     }
 }

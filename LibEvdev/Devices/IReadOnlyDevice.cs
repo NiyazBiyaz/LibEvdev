@@ -8,7 +8,5 @@ namespace LibEvdev.Devices
     public interface IReadOnlyDevice : IDevice
     {
         public int ReadEventFrame(Span<InputEventRaw> targetEventFrame);
-
-        public bool CanRead();
     }
 }
