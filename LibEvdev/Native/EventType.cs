@@ -19,6 +19,13 @@ namespace LibEvdev.Native
         Power = 0x16,
         ForceFeedbackStatus = 0x17,
         Maximum = 0x1f,
-        Count = Maximum + 1
+        Count = Maximum + 1,
+
+        // Non-native values
+        // Count starts from 100
+        /// <summary>
+        /// Non-native value for represent <see cref="Devices.TimerDevice"/> events.
+        /// </summary>
+        Timer = 100,
     }
 }

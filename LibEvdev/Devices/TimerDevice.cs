@@ -3,12 +3,17 @@
 
 using LibEvdev.Native;
 using Mono.Unix.Native;
+using Serilog;
 
 namespace LibEvdev.Devices
 {
     public class TimerDevice : IReadOnlyDevice
     {
         private IntervalTimerSpec timerSpec = default;
+        private readonly int timerId = -1;
+        private static ILogger logger => Log.ForContext("SourceContext", "LibEvdev.Devices.TimerDevice");
+
+        public bool Enabled { get; private set; }
 
         public int FileDescriptor { get; private set; } = -1;
 
@@ -18,16 +23,48 @@ namespace LibEvdev.Devices
             if (FileDescriptor < 0)
                 throw AutoExternalException.New();
 
-            int res;
-            unsafe
-            {
-                res = SysCall.timerfd_settime(FileDescriptor, 0, ref timerSpec, null);
-            }
-            if (res < 0)
-                throw AutoExternalException.New();
+            this.timerSpec = timerSpec;
+            updateMyTimerSpec();
+        }
+
+        public TimerDevice(IntervalTimerSpec timerSpec, int id)
+            : this(timerSpec)
+        {
+            timerId = id;
         }
 
         (int delay, int period) IDevice.GetRepeat() => (timerSpec.Value.AsDateTime().Millisecond, timerSpec.Interval.AsDateTime().Millisecond);
+
+        public TimeSpec Interval
+        {
+            get => timerSpec.Interval;
+            set
+            {
+                timerSpec.Interval = value;
+                updateMyTimerSpec();
+            }
+        }
+
+        public TimeSpec Delay
+        {
+            get => timerSpec.Value;
+            set
+            {
+                timerSpec.Value = value;
+                updateMyTimerSpec();
+            }
+        }
+
+        public void Disable()
+        {
+            var time = new IntervalTimerSpec()
+            {
+                Value = new TimeSpec(0, 0),
+            };
+            updateTimerSpec(time);
+        }
+
+        public void Enable() => updateMyTimerSpec();
 
         public unsafe int ReadEventFrame(Span<InputEventRaw> eventFrame)
         {
@@ -37,14 +74,37 @@ namespace LibEvdev.Devices
             if (expirations <= 0)
                 return 0;
 
+            // If only timeSpec.Value is have been set.
+            if (expirations == 1 && timerSpec.Interval == default)
+            {
+                eventFrame[0] = new InputEventRaw(EventType.Timer, (ushort)TimerCode.Clock, timerId);
+                return 1;
+            }
+
             int i = 0;
             for (; i < expirations && i < eventFrame.Length; i++)
-                eventFrame[i] = InputEventRaw.TIMER;
+                eventFrame[i] = new InputEventRaw(EventType.Timer, (ushort)TimerCode.Repeat, timerId);
 
             return i;
         }
 
-        public bool CanRead() => throw new NotSupportedException(); // Wait it on FD, please
+        private void updateMyTimerSpec() => updateTimerSpec(timerSpec);
+
+        private void updateTimerSpec(IntervalTimerSpec timerSpec)
+        {
+            int res;
+            unsafe
+            {
+                res = SysCall.timerfd_settime(FileDescriptor, 0, ref timerSpec, null);
+            }
+            if (res < 0)
+                throw AutoExternalException.New();
+
+            Enabled = timerSpec.Value != default;
+
+            logger.Information("Timer spec successfully updated. Timer is enabled: {Enabled}", Enabled);
+            logger.Verbose("New timer spec value: {TimerSpec}", timerSpec);
+        }
 
         public void Dispose()
         {
@@ -70,8 +130,9 @@ namespace LibEvdev.Devices
         List<string> IDevice.GetSupportedEventTypesNames() => [];
     }
 
-    public enum Timer : ushort
+    public enum TimerCode : ushort
     {
-        Repeat = 0x03
+        Repeat,
+        Clock,
     }
 }

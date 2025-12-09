@@ -12,6 +12,7 @@ namespace LibEvdev.Devices
         private readonly PollFd[] pollFds;
         private readonly IReadOnlyDevice[] devices;
         private readonly ILogger logger = Log.ForContext("SourceContext", "LibEvdev.Devices.Scanner");
+        private readonly InputEventRaw[] eventFrame = new InputEventRaw[32];
 
         public Scanner(IReadOnlyDevice[] devices)
         {
@@ -27,8 +28,6 @@ namespace LibEvdev.Devices
 
         public IEnumerable<InputEventRaw> ReadInputEvents(int timeoutPeriod, CancellationToken cancel)
         {
-            var eventFrame = new InputEventRaw[32];
-
             logger.Information("Start reading events");
             while (!cancel.IsCancellationRequested)
             {
