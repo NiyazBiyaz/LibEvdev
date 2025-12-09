@@ -12,7 +12,7 @@ namespace LibEvdev.Events
 
         public DateTime Time { get; init; }
         public TimerCode Code { get; private init; }
-        public int Value { get; private init; }
+        public int TimerId { get; private init; }
 
         public TimerEvent(InputEventRaw raw)
         {
@@ -21,7 +21,7 @@ namespace LibEvdev.Events
 
             Time = DateTime.Now;
             Code = (TimerCode)raw.Code;
-            Value = 0;
+            TimerId = raw.Value;
         }
 
         public InputEventRaw ToRaw() => throw new NotSupportedException("This object doesn't support converting to native value.");

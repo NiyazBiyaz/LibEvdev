@@ -10,6 +10,7 @@ namespace LibEvdev.Devices
     public class TimerDevice : IReadOnlyDevice
     {
         private IntervalTimerSpec timerSpec = default;
+        private readonly int timerId = -1;
         private static ILogger logger => Log.ForContext("SourceContext", "LibEvdev.Devices.TimerDevice");
 
         public bool Enabled { get; private set; }
@@ -24,6 +25,12 @@ namespace LibEvdev.Devices
 
             this.timerSpec = timerSpec;
             updateMyTimerSpec();
+        }
+
+        public TimerDevice(IntervalTimerSpec timerSpec, int id)
+            : this(timerSpec)
+        {
+            timerId = id;
         }
 
         (int delay, int period) IDevice.GetRepeat() => (timerSpec.Value.AsDateTime().Millisecond, timerSpec.Interval.AsDateTime().Millisecond);
@@ -70,13 +77,13 @@ namespace LibEvdev.Devices
             // If only timeSpec.Value is have been set.
             if (expirations == 1 && timerSpec.Interval == default)
             {
-                eventFrame[0] = new InputEventRaw(EventType.Timer, (ushort)TimerCode.Clock, 0);
+                eventFrame[0] = new InputEventRaw(EventType.Timer, (ushort)TimerCode.Clock, timerId);
                 return 1;
             }
 
             int i = 0;
             for (; i < expirations && i < eventFrame.Length; i++)
-                eventFrame[i] = new InputEventRaw(EventType.Timer, (ushort)TimerCode.Repeat, 0);
+                eventFrame[i] = new InputEventRaw(EventType.Timer, (ushort)TimerCode.Repeat, timerId);
 
             return i;
         }
