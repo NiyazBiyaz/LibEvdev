@@ -70,7 +70,7 @@ namespace LibEvdev.Devices
             {
                 grabMode = value;
                 Evdev.Grab(Dev, Grab);
-                Log.Information("New grab mode: {NewGrabMode}", this, grabMode);
+                Log.Information("New grab mode: {NewGrabMode}", grabMode);
             }
         }
 
